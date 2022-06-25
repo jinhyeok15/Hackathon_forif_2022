@@ -94,8 +94,9 @@ struct ContentView: View {
         
         var body: some View {
             // fetch and print weather
-            WeatherFetcher.fetchWeather(city: event.location) { weather in
-                self.weather = weather
+            WeatherFetcher.fetchWeather(city: event.location) { weatherInfo in
+                guard let weatherInfo = weatherInfo else { return }
+                self.weather = weatherInfo.weather.first
                 self.isLoading = false
             }
             return NavigationView {
