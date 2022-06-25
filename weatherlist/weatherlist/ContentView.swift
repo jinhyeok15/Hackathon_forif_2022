@@ -18,27 +18,6 @@ struct ContentView: View {
         var weather: Weather?
     }
 
-    // private var events = [
-    //     Event(
-    //         name: "서울 재즈페스티벌",
-    //         date: Calendar.current.date(from:DateComponents(year: 2022, month: 05, day: 14))!,
-    //         location: "서울시 중구 을지로대로 삼거리",
-    //         description: "서울시 중구 을지로대로 삼거리에서 재즈페스티벌을 진행합니다."
-    //         ),
-    //     Event(
-    //         name: "The Airhouse in Gapyeong",
-    //         date: Calendar.current.date(from:DateComponents(year: 2022, month: 05, day: 15))!,
-    //         location: "강원도 가평군 가평읍 가평리",
-    //         description: "강원도 가평군 가평읍 가평리에서 The Airhouse를 진행합니다."
-    //         ),
-    //     Event(
-    //         name: "Surf! - 소란 여름콘서트",
-    //         date: Calendar.current.date(from:DateComponents(year: 2022, month: 05, day: 16))!,
-    //         location: "노들섬",
-    //         description: "노들섬에서 Surf! 소란 여름콘서트를 진행합니다."
-    //         ),
-    // ]
-
     struct EventInputForm: View {
         @State var eventName: String = "";
         @State var eventDate: Date = Date();
@@ -81,7 +60,14 @@ struct ContentView: View {
                         }
                     }
                 }
-                .navigationBarTitle("Add Event")
+                .navigationBarTitleDisplayMode(.inline)
+                .toolbar {
+                    ToolbarItem(placement: .principal) {
+                        Text("Add Event")
+                            .font(.largeTitle.bold())
+                            .accessibilityAddTraits(.isHeader)
+                    }
+                }
             }
         }
     }
@@ -100,21 +86,52 @@ struct ContentView: View {
                 self.isLoading = false
             }
             return NavigationView {
-                VStack {
-                    Text(event.name)
-                    Text(event.date, style: .date)
-                    Text(event.location)
-                    Text(event.description)
+                VStack(spacing: 20) {
+                    Text(event.name).font(.system(size: 48, weight: .bold))
+                    HStack(spacing: 0) {
+                        Text(event.date, style: .date).font(.system(size: 18, weight: .bold))
+                        Text(", "+event.location).font(.system(size: 18, weight: .bold))
+                    }
+                    Text(event.description).font(.system(size: 24, weight: .bold))
                     if (self.isLoading) {
-                        Text("Loading...")
+                        Text("Loading...").font(.system(size: 18, weight: .bold))
                     } else if (self.weather != nil) {
-                        Text(self.weather!.description)
+                        if (self.weather!.description == "clear sky") {
+                            Image("clear sky").resizable()
+                        }
+                        else if (self.weather!.description == "few clouds") {
+                            Image("few clouds").resizable()
+                        }
+                        else if (self.weather!.description == "scattered clouds") {
+                            Image("scattered").resizable()
+                        }
+                        else if (self.weather!.description == "broken clouds") {
+                            Image("broken clouds").resizable()
+                        }
+                        else if (self.weather!.description == "shower rain") {
+                            Image("rain").resizable()
+                        }
+                        else if (self.weather!.description == "rain") {
+                            Image("rain").resizable()
+                        }
+                        else if (self.weather!.description == "thunderstorm") {
+                            Image("thunder storm").resizable()
+                        }
+                        else if (self.weather!.description == "snow") {
+                            Image("snow").resizable()
+                        }
+                        else if (self.weather!.description == "mist") {
+                            Image("mist").resizable()
+                        }
+                        Text(self.weather!.description).font(.system(size: 22, weight: .bold))
+
                     } else {
-                        Text("No weather data")
+                        Text("No weather data").font(.system(size: 22, weight: .bold))
                     }
                 }
             }
         }
+        
     }
     
     @State private var multiSelection = Set<UUID>();
@@ -127,12 +144,14 @@ struct ContentView: View {
                 List(events, selection: $multiSelection) { event in
                     NavigationLink(destination: EventDetailView(event: event)) {
                         VStack(alignment: .leading) {
-                            Text(event.name)
-                            Text(event.date, style: .date)
+                            Text(event.name).font(.system(size: 18))
+                            Text(event.date, style: .date).font(.system(size: 18))
                         }
                     }
                 }
+                
                 .navigationTitle("Events")
+                .navigationBarTitleDisplayMode(.inline)
                 .toolbar {
                     ToolbarItem(placement: .automatic) {
                         NavigationLink(destination: EventInputForm(events: 
@@ -149,6 +168,7 @@ struct ContentView: View {
             }
         }
     }
+
 }
 
 struct ContentView_Previews: PreviewProvider {
